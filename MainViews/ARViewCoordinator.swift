@@ -1,4 +1,4 @@
-import SwiftUI
+
 import RealityKit
 import Foundation
 import ARKit
