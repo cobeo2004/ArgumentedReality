@@ -25,13 +25,30 @@ extension ARView {
         
         if let firstRes = res.first {
             let selectedShape = Shape.allCases[coordinator.selectedShapeIdx]
-            let Entity_Model = createModel(shape: selectedShape)
-            let Anchor_Model = AnchorEntity(world: firstRes.worldTransform)
-            Anchor_Model.addChild(Entity_Model)
-            self.scene.addAnchor(Anchor_Model)
+            let entityModel = createModel(shape: selectedShape)
+            let anchorModel = AnchorEntity(world: firstRes.worldTransform)
+            anchorModel.name = selectedShape.description
+            anchorModel.addChild(entityModel)
+            self.scene.addAnchor(anchorModel)
+            entityModel.generateCollisionShapes(recursive: true)
+            self.installGestures([.translation, .rotation, .scale], for: entityModel)
         }
         else {
             print("Cannot Detect Surface - move device around")
+        }
+    }
+    
+    func enableObjectRemoval() {
+        let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(recognizer: )))
+        self.addGestureRecognizer(longPressRecognizer)
+    }
+    
+    @objc func handleLongPress(recognizer: UILongPressGestureRecognizer) {
+        let location = recognizer.location(in: self)
+        if let entity = self.entity(at: location) {
+            if let anchorEntity = entity.anchor, anchorEntity.name == "Sphere" || anchorEntity.name == "Cube"{
+                anchorEntity.removeFromParent()
+            }
         }
     }
 }
