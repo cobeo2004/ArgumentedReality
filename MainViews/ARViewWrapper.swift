@@ -12,7 +12,7 @@ public struct ARViewWrapper: UIViewRepresentable {
     public func makeUIView(context: UIViewRepresentableContext<ARViewWrapper>) -> ARView {
         let arView = ARView(frame: .zero, cameraMode: .ar, automaticallyConfigureSession: true)
         arView.enablePlacement()
-        
+        arView.enableObjectRemoval()
         arView.session.delegate = context.coordinator
         return arView
     }
